@@ -35,4 +35,48 @@ public sealed class Plugin
     {
         ItemBook.Apply(e);
     }
+
+    [OnScriptExecute]
+    public void OnScript(ScriptExecuteEvent e)
+    {
+        if (e.Map.Value == 0x2C00 && e.ScriptId == 0xE000)
+        {
+            Game.Log.Info(e.Script.ToAsm());
+            e.Script.Replace("""
+                say type1
+                  [menu]* * Save Game * *
+                  * *  Recover  * *
+                  * *   Redux   * *
+                  * *  Cancel   * *[wait]
+                flag_ctx_begin
+                branch word=0x4C40 arg=0x4000 extra=0000
+                flag_ctx_end
+                jump L0000
+                save_menu
+                yield
+                label L0000
+                flag_ctx_begin
+                branch word=0x4C40 arg=0x4000 extra=0100
+                flag_ctx_end
+                jump L0001
+                restore
+                sfx recover
+                wait 23
+                yield
+                label L0001
+                flag_ctx_begin
+                branch word=0x4C40 arg=0x4000 extra=0200
+                flag_ctx_end
+                jump L0002
+                say type1
+                        * *   Grandia Redux   * *[wait][clear]This is the port of the original
+                  Grandia Redux mod for Grandia HD
+                  Remaster[wait][clear]Please report any feedback to the
+                  Mod's Github page.[wait][clear]Enjoy your playthrough![wait]
+                yield
+                label L0002
+                yield
+                """);
+        }
+    }
 }
