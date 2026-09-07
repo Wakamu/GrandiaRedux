@@ -41,7 +41,6 @@ public sealed class Plugin
     {
         if (e.Map.Value == 0x2C00 && e.ScriptId == 0xE000)
         {
-            Game.Log.Info(e.Script.ToAsm());
             e.Script.Replace("""
                 say type1
                   [menu]* * Save Game * *
